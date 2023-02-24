@@ -6,6 +6,7 @@ import RegisterPage from "../pages/RegisterPage";
 import ShowCategoryPage from "../pages/ShowCategoryPage";
 import ShowTransactionPage from "../pages/ShowTransactionPage";
 import UserPage from "../pages/UserPage";
+import VerifyEmailPage from "../pages/VerifyEmailPage";
 
 const { createBrowserRouter } = require("react-router-dom");
 
@@ -41,5 +42,9 @@ export const router = createBrowserRouter([
   {
     path: "/show-transaction",
     element: <ShowTransactionPage />,
+  },
+  {
+    path: "/verify-email/:token",
+    element: <VerifyEmailPage />,
   },
 ]);
