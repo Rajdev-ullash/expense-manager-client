@@ -1,6 +1,66 @@
 import React, { Fragment } from "react";
-import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { loginForm } from "../../helper/AuthFormHelper";
+import { setToken, setUserInfo } from "../../helper/LocalStorageHelper";
+import { useUserLoginMutation } from "../../redux/features/api/apiSlice";
+import { setData } from "../../redux/features/auth/authSlice";
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const getLoginFormData = useSelector((state) => state.auth.data);
+
+  const [loginFormData, { isLoading, error }] = useUserLoginMutation({
+    refetchOnMountOrArgChange: true,
+  });
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    loginForm(getLoginFormData.email, getLoginFormData.password).then((res) => {
+      if (res) {
+        if (res === true) {
+          loginFormData({
+            email: getLoginFormData.email,
+            password: getLoginFormData.password,
+          })
+            .unwrap()
+            .then((res) => {
+              console.log(res.data);
+              if (res?.success === true) {
+                setToken(res?.token);
+                setUserInfo(res?.data);
+                new Swal({
+                  title: "Success",
+                  text: "Login Successfully",
+                  icon: "success",
+                  timer: 2000,
+                  showConfirmButton: false,
+                }).then(() => {
+                  console.log("navigate");
+                  return window.location.replace("/");
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              if (err?.status === 400) {
+                new Swal({
+                  title: "Error",
+                  text: `${err?.data.msg}`,
+                  icon: "error",
+                  showConfirmButton: true,
+                  confirmButtonText: "Ok",
+                });
+              }
+            });
+        }
+      }
+    });
+
+    // dispatch(loginUser(getLoginFormData));
+  };
   return (
     <Fragment>
       {/** Login Form */}
@@ -18,6 +78,12 @@ const Login = () => {
                 type="email"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Email"
+                name="email"
+                onChange={(e) =>
+                  dispatch(
+                    setData({ name: e.target.name, value: e.target.value })
+                  )
+                }
               />
             </div>
             <div className="mt-5">
@@ -28,29 +94,39 @@ const Login = () => {
                 type="password"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Password"
+                name="password"
+                onChange={(e) =>
+                  dispatch(
+                    setData({ name: e.target.name, value: e.target.value })
+                  )
+                }
               />
             </div>
-            {/* Remember Me & register here */}
-            <div className="mt-5 flex justify-between">
-              <div className="flex items-center">
-                <input type="checkbox" className="mr-3 cursor-pointer" />
-                <span className="text-green-500 text-sm">Remember Me</span>
-              </div>
 
-              <div className="flex flex-row items-center">
-                <NavLink to="#" className="text-green-500 text-sm">
-                  Forgot Password?
-                </NavLink>
-                <span className="text-green-500 text-sm mr-1 ml-1"> | </span>
-                <NavLink to="/register" className="text-green-500 text-sm ml-1">
-                  Register Here
-                </NavLink>
-              </div>
-            </div>
             <div className="mt-5">
-              <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full">
+              <button
+                onClick={(e) => handleLogin(e)}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
+              >
                 Login
               </button>
+              {/* Forget Password */}
+              <div className="flex justify-center items-center mt-5">
+                <NavLink
+                  to="/forget-password"
+                  className="text-green-500 hover:text-green-700"
+                >
+                  Forget Password?
+                </NavLink>
+              </div>
+              <div className="flex justify-center items-center mt-3">
+                <NavLink
+                  to="/register"
+                  className="text-green-500 hover:text-green-700 ml-5"
+                >
+                  Already have an account?
+                </NavLink>
+              </div>
             </div>
           </div>
         </div>

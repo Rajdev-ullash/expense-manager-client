@@ -18,9 +18,6 @@ export const authSlice = createSlice({
     toggleImageLoader: (state) => {
       state.imageLoader = !state.imageLoader;
     },
-    // setData: (state, action) => {
-    //   state[action.payload.name] = action.payload.value;
-    // },
     setData: (state, action) => {
       state.data[action.payload.name] = action.payload.value;
     },

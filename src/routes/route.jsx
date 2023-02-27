@@ -1,3 +1,4 @@
+import { getToken } from "../helper/LocalStorageHelper";
 import CreateCategoryPage from "../pages/CreateCategoryPage";
 import CreateTransactionPage from "../pages/CreateTransactionPage";
 import HomePage from "../pages/HomePage";
@@ -8,43 +9,54 @@ import ShowTransactionPage from "../pages/ShowTransactionPage";
 import UserPage from "../pages/UserPage";
 import VerifyEmailPage from "../pages/VerifyEmailPage";
 
-const { createBrowserRouter } = require("react-router-dom");
+const { createBrowserRouter, Navigate } = require("react-router-dom");
+
+let token = getToken("token");
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <HomePage />,
-  },
-  {
-    path: "/user",
-    element: <UserPage />,
-  },
-  {
     path: "/login",
-    element: <LoginPage />,
+    element: !token ? <LoginPage /> : <LoginPage />,
   },
   {
     path: "/register",
-    element: <RegisterPage />,
-  },
-  {
-    path: "/create-category",
-    element: <CreateCategoryPage />,
-  },
-  {
-    path: "/show-category",
-    element: <ShowCategoryPage />,
-  },
-  {
-    path: "/create-transaction",
-    element: <CreateTransactionPage />,
-  },
-  {
-    path: "/show-transaction",
-    element: <ShowTransactionPage />,
+    element: !token ? <RegisterPage /> : <RegisterPage />,
   },
   {
     path: "/verify-email/:token",
-    element: <VerifyEmailPage />,
+    element: !token ? <VerifyEmailPage /> : <VerifyEmailPage />,
+  },
+  /* private routes if token */
+  {
+    path: "/",
+    element: token ? <HomePage /> : <Navigate to="/login" replace />,
+  },
+  {
+    path: "/home",
+    element: token ? <HomePage /> : <Navigate to="/login" replace />,
+  },
+  {
+    path: "/user",
+    element: token ? <UserPage /> : <Navigate to="/login" replace />,
+  },
+  {
+    path: "/create-category",
+    element: token ? <CreateCategoryPage /> : <Navigate to="/login" replace />,
+  },
+  {
+    path: "/show-category",
+    element: token ? <ShowCategoryPage /> : <Navigate to="/login" replace />,
+  },
+  {
+    path: "/create-transaction",
+    element: token ? (
+      <CreateTransactionPage />
+    ) : (
+      <Navigate to="/login" replace />
+    ),
+  },
+  {
+    path: "/show-transaction",
+    element: token ? <ShowTransactionPage /> : <Navigate to="/login" replace />,
   },
 ]);

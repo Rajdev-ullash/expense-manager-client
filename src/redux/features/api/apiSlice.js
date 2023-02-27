@@ -23,6 +23,14 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["Auth"],
     }),
+    userLogin: builder.mutation({
+      query: (body) => ({
+        url: "/login",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
     getUsers: builder.query({
       query: ({ search, filter, pageNo, perPage }) =>
         `/get-all-user/${search}/${filter}/${pageNo}/${perPage}`,
@@ -41,6 +49,7 @@ export const userApi = createApi({
 export const {
   useGetUsersQuery,
   useUserMailVerificationMutation,
+  useUserLoginMutation,
   useDeleteUserMutation,
   useUserRegistrationMutation,
 } = userApi;

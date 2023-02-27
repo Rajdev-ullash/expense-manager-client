@@ -2,7 +2,6 @@ import { toast } from "./CogoToastHelper";
 import {
   checkConfirmationPassword,
   checkEmail,
-  checkImageType,
   checkName,
   checkPassConfirmPassword,
   checkPassword,
@@ -47,4 +46,25 @@ let registrationForm = (name, email, password, confirmPassword, imageUrl) => {
   });
 };
 
-export { registrationForm };
+let loginForm = (email, password) => {
+  /* check validation  */
+  return new Promise((resolve, reject) => {
+    if (email === "") {
+      toast("Please enter your email", "error");
+      reject(false);
+    } else if (!checkEmail(email)) {
+      toast("Please enter valid email", "error");
+      reject(false);
+    } else if (password === "") {
+      toast("Please enter your password", "error");
+      reject(false);
+    } else if (!checkPassword(password)) {
+      toast("Please enter a password at least 6 character", "error");
+      reject(false);
+    } else {
+      resolve(true);
+    }
+  });
+};
+
+export { registrationForm, loginForm };

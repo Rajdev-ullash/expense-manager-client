@@ -1,7 +1,7 @@
 import React, { Fragment, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { NavLink, redirect, Redirect, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { registrationForm } from "../../helper/AuthFormHelper";
 import { uploadImage } from "../../helper/FormHelper";
@@ -113,7 +113,6 @@ const Register = () => {
           });
         }
       }
-      // console.log(res);
     });
   };
 

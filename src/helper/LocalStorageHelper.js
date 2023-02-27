@@ -12,4 +12,23 @@ let removeToken = () => {
   reactLocalStorage.remove("token");
 };
 
-export { setToken, getToken, removeToken };
+let setUserInfo = (userInfo) => {
+  reactLocalStorage.setObject("userInfo", userInfo);
+};
+
+let getUserInfo = () => {
+  return reactLocalStorage.getObject("userInfo");
+};
+
+let removeUserInfo = () => {
+  reactLocalStorage.remove("userInfo");
+};
+
+export {
+  setToken,
+  getToken,
+  removeToken,
+  setUserInfo,
+  getUserInfo,
+  removeUserInfo,
+};
