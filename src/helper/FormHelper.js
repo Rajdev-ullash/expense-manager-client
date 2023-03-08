@@ -3,7 +3,7 @@ import { reactLocalStorage } from "reactjs-localstorage";
 let EmailRegx = new RegExp(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/);
 
 /* Name must be at least 3 character */
-let NameRegx = new RegExp(/^[a-zA-Z]{3,}$/);
+let NameRegx = new RegExp(/^[a-zA-Z]{2,}$/);
 
 /* Password must be at least 6 character */
 let PasswordRegx = new RegExp(/^[a-zA-Z0-9]{6,}$/);

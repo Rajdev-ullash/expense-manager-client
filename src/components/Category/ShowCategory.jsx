@@ -2,8 +2,45 @@ import React, { Fragment, useState } from "react";
 import { BiAccessibility } from "react-icons/bi";
 import { NavLink } from "react-router-dom";
 import { MdOutlineModeEditOutline, MdOutlineDelete } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useGetCategoriesQuery } from "../../redux/features/api/apiSlice";
+import Table from "../Table/Table";
+import { MdOutlineDeleteOutline } from "react-icons/md";
+import Pagination from "../Pagination/Pagination";
+import CategoryTable from "../CategoryTable/CategoryTable";
 const ShowCategory = () => {
-  const [dropdown, setDropdown] = useState(false);
+  const dispatch = useDispatch();
+
+  const search = useSelector((state) => state.user.search);
+  const pageNo = useSelector((state) => state.user.pageNo);
+  const perPage = useSelector((state) => state.user.perPage);
+
+  const { data, isLoading, isError, error } = useGetCategoriesQuery(
+    {
+      search: search,
+      pageNo: pageNo,
+      perPage: perPage,
+    },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+  console.log(data);
+  let pageTotal = Math.ceil(data?.data[0]?.Total[0]?.count / perPage);
+
+  const handlePageClick = (e) => {
+    const selectedPage = e.selected;
+    // alert(selectedPage);
+    dispatch({ type: "user/setPageNo", payload: selectedPage + 1 });
+  };
+  const setSearch = (e) => {
+    dispatch({ type: "user/setSearch", payload: e.target.value });
+    if (e.target.value.length === 0) {
+      dispatch({ type: "user/setSearch", payload: "0" });
+    }
+  };
+
   return (
     <Fragment>
       {/* Responsive Tailwind Table with pagination search & filter */}
@@ -15,6 +52,7 @@ const ShowCategory = () => {
               type="text"
               placeholder="Search"
               className="border border-gray-300 rounded-md px-2 py-1"
+              onChange={(e) => setSearch(e)}
             />
           </div>
           <div className="flex flex-row gap-2 items-center">
@@ -22,11 +60,14 @@ const ShowCategory = () => {
               <select
                 aria-label="Selected tab"
                 className="form-select form-select-sm rounded-md text-sm text-gray-500 px-2 py-2 mr-2"
+                onChange={(e) =>
+                  dispatch({ type: "user/setPerPage", payload: e.target.value })
+                }
               >
-                <option className="px-2 py-1">10</option>
-                <option>25</option>
-                <option>50</option>
-                <option>100</option>
+                <option value="5">5 per page</option>
+                <option value="10">10 per page</option>
+                <option value="25">25 per page</option>
+                <option value="50">50 per page</option>
               </select>
             </div>
           </div>
@@ -65,107 +106,24 @@ const ShowCategory = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  <tr>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">1</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {/** Icon */}
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <BiAccessibility size={20} />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">Category Name</div>
-                    </td>
-
-                    <td className="px-6 py-4 whitespace-nowrap text-start text-sm font-medium">
-                      {/** Edit & Delete icon */}
-                      <div className="flex flex-row gap-4">
-                        <NavLink to="#">
-                          <MdOutlineModeEditOutline
-                            size={20}
-                            className="text-green-500"
+                  {data?.data[0]?.Rows.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <CategoryTable
+                          item={item}
+                          index={index}
+                          rowData={perPage * (pageNo - 1)}
+                        />
+                        <td className="px-6 py-4 whitespace-nowrap text-start text-sm font-medium">
+                          {/* delete icon */}
+                          <MdOutlineDeleteOutline
+                            size={22}
+                            className="text-center ml-3 text-red-600 hover:text-red-900 cursor-pointer"
                           />
-                        </NavLink>
-                        <NavLink to="#">
-                          <MdOutlineDelete size={20} className="text-red-500" />
-                        </NavLink>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">2</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {/** Icon */}
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <BiAccessibility size={20} />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">Category Name</div>
-                    </td>
-
-                    <td className="px-6 py-4 whitespace-nowrap text-start text-sm font-medium">
-                      {/** Edit & Delete icon */}
-                      <div className="flex flex-row gap-4">
-                        <NavLink to="#">
-                          <MdOutlineModeEditOutline
-                            size={20}
-                            className="text-green-500"
-                          />
-                        </NavLink>
-                        <NavLink to="#">
-                          <MdOutlineDelete size={20} className="text-red-500" />
-                        </NavLink>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">3</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {/** Icon */}
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0">
-                          <BiAccessibility size={20} />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">Category Name</div>
-                    </td>
-
-                    <td className="px-6 py-4 whitespace-nowrap text-start text-sm font-medium">
-                      {/** Edit & Delete icon */}
-                      <div className="flex flex-row gap-4">
-                        <NavLink to="#">
-                          <MdOutlineModeEditOutline
-                            size={20}
-                            className="text-green-500"
-                          />
-                        </NavLink>
-                        <NavLink to="#">
-                          <MdOutlineDelete size={20} className="text-red-500" />
-                        </NavLink>
-                      </div>
-                    </td>
-                  </tr>
-
-                  {/* More items... */}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -173,104 +131,20 @@ const ShowCategory = () => {
         </div>
         {/* Pagination */}
         <div className="mt-3 rounded-lg bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between rounded-sm">
-            <div>
-              <p className="text-sm text-gray-700">
-                Showing
-                <span className="font-medium ml-1 mr-1">1</span>
-                to
-                <span className="font-medium ml-1 mr-1">10</span>
-                of
-                <span className="font-medium ml-1 mr-1">97</span>
-                results
-              </p>
+          {/* react-Pagination */}
+          {data?.data[0]?.Rows.length > 0 && (
+            <div className="flex flex-row justify-between items-center font-semibold">
+              <div className="text-sm text-gray-500 mr-3">
+                Showing {perPage * (pageNo - 1) + data?.data[0]?.Rows.length} of{" "}
+                {data?.data[0]?.Total[0]?.count} entries
+              </div>
+              <div className="text-sm text-gray-500">
+                Page {pageNo} of {pageTotal}
+              </div>
             </div>
-            <div>
-              <nav
-                className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-                aria-label="Pagination"
-              >
-                <NavLink
-                  to="#"
-                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  <span className="sr-only">Previous</span>
-                  <svg
-                    className="h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 7.293a1 1 0 011.414 0L12 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </NavLink>
-                <NavLink
-                  to="#"
-                  aria-current="page"
-                  className="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-                >
-                  1
-                </NavLink>
-                <NavLink
-                  to="#"
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  2
-                </NavLink>
-                <NavLink
-                  to="#"
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  3
-                </NavLink>
-                <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                  ...
-                </span>
-                <NavLink
-                  to="#"
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  8
-                </NavLink>
-                <NavLink
-                  to="#"
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  9
-                </NavLink>
-                <NavLink
-                  to="#"
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  10
-                </NavLink>
-                <NavLink
-                  to="#"
-                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  <span className="sr-only">Next</span>
-                  <svg
-                    className="h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12.707 7.293a1 1 0 00-1.414 0L8 10.586 4.707 7.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l4-4a1 1 0 000-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </NavLink>
-              </nav>
-            </div>
-          </div>
+          )}
+
+          <Pagination pageTotal={pageTotal} handlePageClick={handlePageClick} />
         </div>
       </div>
     </Fragment>

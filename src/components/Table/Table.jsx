@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 
-const Table = ({ item, index }) => {
+const Table = ({ item, index, rowData }) => {
   return (
     <Fragment>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-900">{index + 1}</div>
+        <div className="text-sm text-gray-900">{rowData + index + 1}</div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-sm text-gray-900">{item.name}</div>
@@ -15,12 +15,12 @@ const Table = ({ item, index }) => {
       <td className="px-6 py-4 whitespace-nowrap">
         <span
           className={
-            item.isVerified == true
+            item.isVerified === true
               ? "px-4 py-1 bg-green-500 text-white rounded-full text-xs font-semibold"
               : "px-4 py-1 bg-red-500 text-white rounded-full text-xs font-semibold"
           }
         >
-          {item.isVerified == true ? "Active" : "Inactive"}
+          {item.isVerified === true ? "Active" : "Inactive"}
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

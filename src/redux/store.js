@@ -3,6 +3,7 @@ import { userApi } from "./features/api/apiSlice";
 import sidebarSliceReducer from "./features/sidebar/sidebarSlice";
 import userSliceReducer from "./features/user/userSlice";
 import authSliceReducer from "./features/auth/authSlice";
+import formSliceReducer from "./features/form/formSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     sidebar: sidebarSliceReducer,
     user: userSliceReducer,
     auth: authSliceReducer,
+    form: formSliceReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(userApi.middleware),

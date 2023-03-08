@@ -158,7 +158,11 @@ const User = () => {
                   {data?.data[0]?.Rows.map((item, index) => {
                     return (
                       <tr key={index}>
-                        <Table item={item} index={index} />
+                        <Table
+                          item={item}
+                          index={index}
+                          rowData={perPage * (pageNo - 1)}
+                        />
                         <td className="px-6 py-4 whitespace-nowrap text-start text-sm font-medium">
                           {/* delete icon */}
                           <MdOutlineDeleteOutline

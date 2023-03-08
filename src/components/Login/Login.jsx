@@ -8,7 +8,7 @@ import { setToken, setUserInfo } from "../../helper/LocalStorageHelper";
 import { useUserLoginMutation } from "../../redux/features/api/apiSlice";
 import { setData } from "../../redux/features/auth/authSlice";
 const Login = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const getLoginFormData = useSelector((state) => state.auth.data);
 
@@ -27,7 +27,6 @@ const Login = () => {
           })
             .unwrap()
             .then((res) => {
-              console.log(res.data);
               if (res?.success === true) {
                 setToken(res?.token);
                 setUserInfo(res?.data);
@@ -38,7 +37,6 @@ const Login = () => {
                   timer: 2000,
                   showConfirmButton: false,
                 }).then(() => {
-                  console.log("navigate");
                   return window.location.replace("/");
                 });
               }
@@ -104,12 +102,22 @@ const Login = () => {
             </div>
 
             <div className="mt-5">
-              <button
-                onClick={(e) => handleLogin(e)}
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
-              >
-                Login
-              </button>
+              {isLoading ? (
+                <div
+                  className="
+                flex justify-center items-center
+                "
+                >
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-500"></div>
+                </div>
+              ) : (
+                <button
+                  onClick={(e) => handleLogin(e)}
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
+                >
+                  Login
+                </button>
+              )}
               {/* Forget Password */}
               <div className="flex justify-center items-center mt-5">
                 <NavLink

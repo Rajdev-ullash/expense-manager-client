@@ -1,13 +1,16 @@
 import { getToken } from "../helper/LocalStorageHelper";
 import CreateCategoryPage from "../pages/CreateCategoryPage";
 import CreateTransactionPage from "../pages/CreateTransactionPage";
+import ForgetPasswordPage from "../pages/ForgetPasswordPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
+import ResetPasswordPage from "../pages/ResetPasswordPage";
 import ShowCategoryPage from "../pages/ShowCategoryPage";
 import ShowTransactionPage from "../pages/ShowTransactionPage";
 import UserPage from "../pages/UserPage";
 import VerifyEmailPage from "../pages/VerifyEmailPage";
+import VerifyOtpPage from "../pages/VerifyOtpPage";
 
 const { createBrowserRouter, Navigate } = require("react-router-dom");
 
@@ -25,6 +28,18 @@ export const router = createBrowserRouter([
   {
     path: "/verify-email/:token",
     element: !token ? <VerifyEmailPage /> : <VerifyEmailPage />,
+  },
+  {
+    path: "/forget-password",
+    element: !token ? <ForgetPasswordPage /> : <ForgetPasswordPage />,
+  },
+  {
+    path: "/verify-otp",
+    element: !token ? <VerifyOtpPage /> : <VerifyOtpPage />,
+  },
+  {
+    path: "/reset-password",
+    element: !token ? <ResetPasswordPage /> : <ResetPasswordPage />,
   },
   /* private routes if token */
   {
